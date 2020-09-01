@@ -180,7 +180,7 @@ namespace Microsoft.Azure.WebJobs.ServiceBus.Listeners
                 Vote = ScaleVote.None
             };
 
-            const int NumberOfSamplesToConsider = 5;
+            const int NumberOfSamplesToConsider = 1;
 
             // Unable to determine the correct vote with no metrics.
             if (metrics == null || metrics.Length == 0)
@@ -208,10 +208,10 @@ namespace Microsoft.Azure.WebJobs.ServiceBus.Listeners
 
             // Maintain a minimum ratio of 1 worker per 1,000 messages.
             long latestMessageCount = metrics.Last().MessageCount;
-            if (latestMessageCount > workerCount * 1000)
+            if (latestMessageCount > workerCount * 1)
             {
                 status.Vote = ScaleVote.ScaleOut;
-                _logger.LogInformation($"MessageCount ({latestMessageCount}) > WorkerCount ({workerCount}) * 1,000.");
+                _logger.LogInformation($"MessageCount ({latestMessageCount}) > WorkerCount ({workerCount}) * 1.");
                 _logger.LogInformation($"Message count for Service Bus Entity ({_entityPath}, {latestMessageCount}) " +
                                        $"is too high relative to the number of instances ({workerCount}).");
                 return status;
