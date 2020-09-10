@@ -63,6 +63,11 @@ namespace Microsoft.Azure.WebJobs.ServiceBus
         public int PrefetchCount { get; set; }
 
         /// <summary>
+        /// Gets or sets the default ScaleWorkersMessageCount
+        /// </summary>
+        public int ScaleWorkersMessageCount { get; set; }
+
+        /// <summary>
         /// Gets or sets the default <see cref="Azure.ServiceBus.BatchOptions"/> that will be used by
         /// <see cref="ClientEntity"/>s.
         /// </summary>
@@ -110,6 +115,7 @@ namespace Microsoft.Azure.WebJobs.ServiceBus
             JObject options = new JObject
             {
                 { nameof(PrefetchCount), PrefetchCount },
+                { nameof(ScaleWorkersMessageCount), ScaleWorkersMessageCount },
                 { nameof(MessageHandlerOptions), messageHandlerOptions },
                 { nameof(SessionHandlerOptions), sessionHandlerOptions },
                 { nameof(BatchOptions), batchOptions}

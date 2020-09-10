@@ -28,10 +28,11 @@ namespace Microsoft.Azure.WebJobs.ServiceBus.Listeners
         private readonly Lazy<MessageReceiver> _receiver;
         private readonly Lazy<ManagementClient> _managementClient;
         private readonly ILogger<ServiceBusScaleMonitor> _logger;
+        private readonly ServiceBusOptions _options;
 
         private DateTime _nextWarningTime;
 
-        public ServiceBusScaleMonitor(string functionId, EntityType entityType, string entityPath, string connectionString, Lazy<MessageReceiver> receiver, ILoggerFactory loggerFactory)
+        public ServiceBusScaleMonitor(string functionId, EntityType entityType, string entityPath, string connectionString, Lazy<MessageReceiver> receiver, ILoggerFactory loggerFactory, ServiceBusOptions config)
         {
             _functionId = functionId;
             _entityType = entityType;
@@ -43,6 +44,7 @@ namespace Microsoft.Azure.WebJobs.ServiceBus.Listeners
             _managementClient = new Lazy<ManagementClient>(() => new ManagementClient(_connectionString));
             _logger = loggerFactory.CreateLogger<ServiceBusScaleMonitor>();
             _nextWarningTime = DateTime.UtcNow;
+            _options = config;
         }
 
         public ScaleMonitorDescriptor Descriptor
@@ -208,7 +210,7 @@ namespace Microsoft.Azure.WebJobs.ServiceBus.Listeners
 
             // Maintain a minimum ratio of 1 worker per 1,000 messages.
             long latestMessageCount = metrics.Last().MessageCount;
-            if (latestMessageCount > workerCount * 1)
+            if (latestMessageCount > workerCount * _options.ScaleWorkersMessageCount)
             {
                 status.Vote = ScaleVote.ScaleOut;
                 _logger.LogInformation($"MessageCount ({latestMessageCount}) > WorkerCount ({workerCount}) * 1.");

@@ -59,7 +59,7 @@ namespace Microsoft.Azure.WebJobs.ServiceBus.Listeners
             _logger = loggerFactory.CreateLogger<ServiceBusListener>();
             _receiver = CreateMessageReceiver();
             _sessionClient = CreateSessionClient();
-            _scaleMonitor = new Lazy<ServiceBusScaleMonitor>(() => new ServiceBusScaleMonitor(_functionId, _entityType, _entityPath, _serviceBusAccount.ConnectionString, _receiver, _loggerFactory));
+            _scaleMonitor = new Lazy<ServiceBusScaleMonitor>(() => new ServiceBusScaleMonitor(_functionId, _entityType, _entityPath, _serviceBusAccount.ConnectionString, _receiver, _loggerFactory, config));
             _singleDispatch = singleDispatch;
 
             if (_isSessionsEnabled)
